@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Fix some inconsistencies in the code you get from initializr.
+# By Martin Vilcans, @vilcans, http://www.librador.com
+
+set -e
+
+files=$(find \
+  -type f \
+  -not -path './.git/*' \
+  -not -name '*.png' \
+  -not -name '*.ico' \
+)
+
+temp=$(tempfile)
+
+for file in $files; do
+  # Get rid of those DOS line endings
+  dos2unix $file
+  # Expand tabs and remove trailing spaces
+  expand -t 2 $file | sed -r 's/ +$//' >$temp
+  cp $temp $file
+done
